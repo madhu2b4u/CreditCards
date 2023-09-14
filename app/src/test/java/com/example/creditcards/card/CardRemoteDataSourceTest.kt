@@ -1,17 +1,15 @@
 package com.example.creditcards.card
 
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.creditcards.LiveDataTestUtil
 import com.example.creditcards.card.data.models.CardDO
+import com.example.creditcards.card.data.remote.services.CardService
 import com.example.creditcards.card.data.remote.source.CardRemoteDataSource
-import com.example.creditcards.card.data.repository.CardRepository
-import com.example.creditcards.card.data.repository.CardRepositoryImpl
-import com.example.creditcards.common.Status
-import com.example.creditcards.database.source.LocalDataSource
+import com.example.creditcards.card.data.remote.source.CardRemoteDataSourceImpl
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -19,26 +17,29 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
-
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import retrofit2.Response
 
 @ExperimentalCoroutinesApi
-class CardRepositoryTest {
+class CardRemoteDataSourceTest {
 
+    // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var repositoryTest: CardRepository
 
-    @Mock
-    lateinit var localStore: LocalDataSource
+    private lateinit var remoteDataSource: CardRemoteDataSource
 
-    @Mock
-    lateinit var remoteDataStore: CardRemoteDataSource
 
-    private val result = listOf(
+    private lateinit var service: CardService
+
+    private val coroutineContext = Dispatchers.Default
+
+    private val dispatcher = StandardTestDispatcher()
+
+
+    private val mockCardDoList = listOf(
         CardDO(
             "2027-09-12",
             "1234-2121-1221-1211",
@@ -83,33 +84,50 @@ class CardRepositoryTest {
         ),
     )
 
+
     @Before
     fun init() {
-        MockitoAnnotations.initMocks(this)
-        repositoryTest = CardRepositoryImpl(remoteDataStore, localStore)
+        service = mock {
+            onBlocking { getCardAsync(10) } doReturn GlobalScope.async {
+                Response.success(mockCardDoList)
+            }
+        }
+
+        remoteDataSource = CardRemoteDataSourceImpl(service, coroutineContext)
+
     }
 
-    private val dispatcher = StandardTestDispatcher()
-
     @Test
-    fun getCards() {
+    fun testGetCard() {
         CoroutineScope(dispatcher).launch {
-            Mockito.`when`(localStore.getCards())
-                .thenReturn(result)
+            service = mock {
+                onBlocking { getCardAsync(10) } doReturn GlobalScope.async {
+                    Response.success(mockCardDoList)
+                }
+            }
 
-            val result = repositoryTest.getCards(10)
-            assert(LiveDataTestUtil.getValue(result).status == Status.LOADING)
-            delay(2500)
-            assert(LiveDataTestUtil.getValue(result).status == Status.SUCCESS)
-            assert(LiveDataTestUtil.getValue(result).data == result)
+            remoteDataSource =
+                CardRemoteDataSourceImpl(service, coroutineContext)
+
+            val result = remoteDataSource.getCards(10)
+
+            assert(result == mockCardDoList)
         }
     }
 
     @Test(expected = Exception::class)
-    fun getCardsThrowsException() = TestScope().runTest {
-        Mockito.doThrow(Exception("no data"))
-            .`when`(localStore.getCards())
-        repositoryTest.getCards(10)
+    fun testThrowGetCardException() = TestScope().runTest {
+        service = mock {
+            onBlocking { getCardAsync(10) } doReturn GlobalScope.async {
+                Response.error(404, null)
+            }
+        }
+
+        remoteDataSource =
+            CardRemoteDataSourceImpl(service, coroutineContext)
+
+        assert(remoteDataSource.getCards(10) == mockCardDoList)
     }
+
 
 }

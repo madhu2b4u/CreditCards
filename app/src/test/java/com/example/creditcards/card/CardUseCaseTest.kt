@@ -30,12 +30,48 @@ class CardUseCaseTest {
     private lateinit var repository: CardRepository
 
     private val result = listOf(
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 1, "32e06962-4567-452e-9870-8c977baeda20"),
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 2, "32e06962-4567-452e-9870-8c977baeda20"),
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 3, "32e06962-4567-452e-9870-8c977baeda20"),
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 4, "32e06962-4567-452e-9870-8c977baeda20"),
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 5, "32e06962-4567-452e-9870-8c977baeda20"),
-        CardDO("2027-09-12", "1234-2121-1221-1211", "forbrugsforeningen", 6, "32e06962-4567-452e-9870-8c977baeda20"),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            1,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            2,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            3,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            4,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            5,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
+        CardDO(
+            "2027-09-12",
+            "1234-2121-1221-1211",
+            "forbrugsforeningen",
+            6,
+            "32e06962-4567-452e-9870-8c977baeda20"
+        ),
     )
 
     private val dispatcher = StandardTestDispatcher()

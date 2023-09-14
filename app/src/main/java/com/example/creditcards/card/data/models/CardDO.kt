@@ -11,7 +11,7 @@ data class CardDO(
     @Expose @SerializedName("credit_card_number")
     val creditCardNumber: String,
     @Expose @SerializedName("credit_card_type")
-    val creditCardType: String,
+    val creditCardType: String,// in future can add  CardType
     @Expose @SerializedName("id")
     val id: Int,
     @Expose @SerializedName("uid")
