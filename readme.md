@@ -1,6 +1,6 @@
 # Credit Card Data Display App
 
-This Android app fetches credit card data from an external API and displays it in a list. It is built using Jetpack Compose and includes basic functionality for retrieving and rendering credit card information.
+This Android app fetches credit card data from an external API and displays it in a list. It is built using Jetpack Compose and includes basic functionality for retrieving and rendering credit card information using MVVM clean architecture.
 
 ## Assumptions and Decisions
 
@@ -15,6 +15,20 @@ This Android app fetches credit card data from an external API and displays it i
 ### Sample Data
 
 - For testing purposes, the code uses a sample response (`sampleResponse`) to populate the credit card data. In a real-world scenario, this data would be fetched from the API.
+
+### MVVM Architecture
+
+- The code is structured following the MVVM (Model-View-ViewModel) architectural pattern, which separates concerns and promotes a clean and organized codebase.
+
+- The `ViewModel` component is responsible for managing and providing data to the UI components (View) and contains business logic. In this case, the `CardViewModel` is used to fetch and handle credit card data.
+
+- LiveData is utilized to observe changes in data and notify the UI when updates occur. The LiveData approach simplifies data synchronization between the ViewModel and UI components.
+
+- The `CardRepository` acts as a data source, providing a clean API for fetching and managing credit card data. It abstracts the data source, making it easy to switch between local and remote data sources.
+
+- Dependency injection is used to provide instances of repositories, use cases, and other components to the ViewModel, promoting a modular and testable codebase.
+
+- This MVVM architecture facilitates code organization, testability, and separation of concerns, making it suitable for maintaining and extending the app in the long term.
 
 ### UI Components
 
